@@ -1,6 +1,7 @@
 import express from "express"
 import WebSocket from "ws"
 import http from "http"
+import { getUniqueID } from "./util"
 
 const PORT = 3000
 const app = express()
@@ -19,10 +20,23 @@ app.get("/", (req, res) => res.render("home"))
 app.get("/*", (req, res) => res.redirect("/"))
 
 /** WS **/
+const sockets = new Map();
+const onSocketMessage = (id, message) => {
+    console.log('📨 클라이언트 메시지:', message.toString())
+    Array.from(sockets.keys())
+        .filter((key) => key !== id)
+        .forEach((key) => sockets.get(key).send(message.toString()))
+}
+const onSocketClosed = (id) => {
+    sockets.delete(id)
+    console.log(`❌ 클라이언트 연결 끊김, 현재 ${sockets.size}개 연결중`)
+}
 wss.on('connection', socket => {
-    console.log('✅ 클라이언트 연결 완료!')
-    socket.on('message', (message) => console.log('📨 클라이언트 메시지:', message))
-    socket.on('close', () => console.log('❌ 클라이언트 연결 끊김'))
+    const socketId = getUniqueID()
+    sockets.set(socketId, socket)
+    console.log(`✅ ${socketId} 클라이언트 연결 완료!, 현재 ${sockets.size}개 연결중`)
+    socket.on('message', m => onSocketMessage(socketId, m))
+    socket.on('close', () => onSocketClosed(socketId))
     socket.send('hello')
 })
 
