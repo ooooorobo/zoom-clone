@@ -19,16 +19,12 @@ app.get("/", (req, res) => res.render("home"))
 app.get("/*", (req, res) => res.redirect("/"))
 
 /** WS **/
-
-/**
- * socket 연결되었을 때 처리
- * @param socket - 연결된 브라우저
- */
-function handleConnection(socket) {
-    console.log(socket)
-}
-
-wss.on('connection', handleConnection)
+wss.on('connection', socket => {
+    console.log('✅ 클라이언트 연결 완료!')
+    socket.on('message', (message) => console.log('📨 클라이언트 메시지:', message))
+    socket.on('close', () => console.log('❌ 클라이언트 연결 끊김'))
+    socket.send('hello')
+})
 
 const handleListen = () => console.log(`http://localhost:${PORT} 에서 서버 실행 중`)
 // 같은 PORT(:3000)에서 HTTP, WS 두 가지 프로토콜을 처리할 수 있도록 함
