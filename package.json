@@ -11,7 +11,8 @@
     "build:types": "tsc",
     "build:js": "babel src --out-dir dist --extensions \".ts,.tsx\" --source-maps inline",
     "start": "node dist/server.js",
-    "start:watch": "nodemon"
+    "start:watch": "nodemon",
+    "lint": "eslint src"
   },
   "keywords": [],
   "author": "",
@@ -23,8 +24,11 @@
     "@types/express": "4.17.13",
     "@types/node": "17.0.31",
     "@types/ws": "8.5.3",
+    "@typescript-eslint/eslint-plugin": "5.22.0",
+    "@typescript-eslint/parser": "5.22.0",
     "babel-plugin-add-import-extension": "1.6.0",
     "copyfiles": "2.4.1",
+    "eslint": "8.15.0",
     "nodemon": "2.0.16",
     "rimraf": "3.0.2",
     "typescript": "4.6.4"
