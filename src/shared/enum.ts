@@ -1,4 +1,4 @@
-export const MessageType = {
+const MessageType = {
     REQ_NICKNAME_CHANGE: 'NICKNAME',
     REQ_CHAT_SEND_MESSAGE: 'REQ_CHAT_SEND_MESSAGE',
     REQ_CHAT_ENTER: 'REQ_CHAT_ENTER',
@@ -7,6 +7,8 @@ export const MessageType = {
     NICKNAME_CHANGED: 'NICKNAME_CHANGED',
     CHAT_NEW_MESSAGE: 'CHAT_NEW_MESSAGE'
 }
+
+export type MessageType = typeof MessageType[keyof typeof MessageType]
 
 export const StorageKey = {
     NICKNAME: 'NICKNAME'

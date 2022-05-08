@@ -1,7 +1,9 @@
 import express from "express"
 import http from "http"
 import startWsServer from "./socket"
+import path from 'path';
 
+const __dirname = path.resolve("dist");
 const PORT = 3000
 const app = express()
 
@@ -14,6 +16,7 @@ startWsServer(server)
 app.set("view engine", "pug")
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"))
+app.use("/shared", express.static(__dirname + "/shared"))
 
 app.get("/", (req, res) => res.render("home"))
 app.get("/*", (req, res) => res.redirect("/"))

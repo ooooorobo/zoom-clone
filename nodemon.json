@@ -1,4 +1,6 @@
 {
-  "exec": "babel-node src/server.js",
-  "ignore": ["src/public/*"]
+  "exec": "npm run build && npm run start",
+  "watch": ["src/"],
+  "ignore": ["README.md"],
+  "ext": "ts,js,pug,html,css"
 }
