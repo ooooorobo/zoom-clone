@@ -22,11 +22,11 @@ export class SocketIoController extends SocketController<Socket>{
     }
 
     sendSocketMessage(payload: CommonSocketMessage) {
-        this.socket.send(JSON.stringify(payload));
+        this.socket.emit(payload.type, payload);
     }
 
-    enterRoom(nickname: string) {
-        const msg: ReqEnterChat = {type: PayloadType.REQ_CHAT_ENTER, nickname};
-        this.socket.emit("REQ_CHAT_ENTER", msg);
+    enterRoom(nickname: string, roomName: string) {
+        const msg: ReqEnterChat = {type: PayloadType.REQ_CHAT_ENTER, nickname, roomName};
+        this.sendSocketMessage(msg);
     }
 }

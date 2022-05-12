@@ -13,7 +13,7 @@ export interface ReqSendMessage extends CommonSocketMessage {
 export interface ReqEnterChat extends CommonSocketMessage {
     type: PayloadType.REQ_CHAT_ENTER;
     nickname: string;
-
+    roomName: string;
 }
 
 export interface ReqChangeNickname extends CommonSocketMessage {
