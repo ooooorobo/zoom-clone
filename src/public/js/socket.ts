@@ -1,8 +1,6 @@
-import {
-    CommonSocketMessage,
-    ReqEnterChat
-} from "../../shared/model/dto";
+import {CommonSocketMessage, ReqEnterChat} from "../../shared/model/dto";
 import {SocketControllerListener} from "../../utils/types";
+import {PayloadType} from "../../shared/enum";
 
 export abstract class SocketController<SOCKET> {
     socket: SOCKET;
@@ -30,7 +28,7 @@ export abstract class SocketController<SOCKET> {
     abstract sendSocketMessage(payload: CommonSocketMessage): void;
 
     enterRoom(nickname: string) {
-        const msg: ReqEnterChat = {type: "REQ_CHAT_ENTER", payload: {nickname}};
+        const msg: ReqEnterChat = {type: PayloadType.REQ_CHAT_ENTER, nickname};
         this.sendSocketMessage(msg);
     }
 }

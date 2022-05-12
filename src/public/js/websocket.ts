@@ -20,7 +20,7 @@ export class WebSocketController extends SocketController<WebSocket>{
         });
 
         this.socket.addEventListener("message", (res) => {
-            const data: CommonSocketMessage = JSON.parse(res.data.toString());
+            const data: CommonSocketMessage = JSON.parse(res.data);
             this.listeners.forEach(l => l.onReceiveMessage(data));
         });
 
