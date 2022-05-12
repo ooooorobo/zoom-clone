@@ -1,6 +1,6 @@
 import express from "express";
 import http from "http";
-import startWsServer from "./socket";
+import startWsServer from "./socketio";
 import path from "path";
 
 const __dirname = path.resolve("dist");

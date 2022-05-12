@@ -7,6 +7,7 @@ import {
     ReqEnterChat,
     ReqSendMessage
 } from "../../shared/model/dto";
+import {io, Socket} from "socket.io-client";
 
 const SOCKET_ENDPOINT = `ws://${window.location.host}`;
 const MESSAGE_TYPE = {
@@ -39,7 +40,7 @@ const handleSubmit = (e: Event) => {
         const input = messageForm.querySelector("input");
         if (input) {
             const msg: ReqSendMessage = {type: "REQ_CHAT_SEND_MESSAGE", payload: {message: input.value}};
-            socket.send(JSON.stringify(msg));
+            sendSocketMessage(socket, msg);
             addNewMessage(MESSAGE_TYPE.MINE, `나: ${input.value}`);
             input.value = "";
         }
@@ -52,7 +53,7 @@ const handleNickSubmit = (e: Event) => {
         const input = nicknameForm.querySelector("input");
         if (input && input.value !== state.nickname) {
             const msg: ReqChangeNickname = {type: "REQ_NICKNAME_CHANGE", payload: {nickname: input.value}};
-            socket.send(JSON.stringify(msg));
+            sendSocketMessage(socket, msg);
             state.nickname = input.value;
             saveToStorage(StorageKey.NICKNAME, input.value);
         }
@@ -72,15 +73,21 @@ if (messageForm && nicknameForm) {
 }
 
 // 소켓 핸들러
-/**
+
+const socket = io();
+function sendSocketMessage(socket: Socket, payload: CommonSocketMessage) {
+    // socket.send(JSON.stringify(payload));
+}
+
+/* -- 아래: 웹소켓 사용
  * socket -> 연결된 서버
  * WebSocket 인스턴스를 생성하면 서버와의 WS 커넥션을 생성함 - socket 인스턴스를 통해 서버와 통신 가능
- */
 const socket = new WebSocket(SOCKET_ENDPOINT);
+
 socket.addEventListener("open", () => {
     console.log("✅ 서버 연결 완료!");
     const msg: ReqEnterChat = {type: "REQ_CHAT_ENTER", payload: {nickname: state.nickname}};
-    socket.send(JSON.stringify(msg));
+    sendSocketMessage(socket, msg);
 });
 
 socket.addEventListener("message", (res) => {
@@ -113,4 +120,4 @@ socket.addEventListener("message", (res) => {
 socket.addEventListener("close", () => {
     console.log("❎ 서버 연결 종료됨");
 });
-
+*/
