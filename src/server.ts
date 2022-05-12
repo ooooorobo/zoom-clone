@@ -2,6 +2,7 @@ import express from "express";
 import http from "http";
 import startWsServer from "./socketio";
 import path from "path";
+import {renderFile} from "ejs";
 
 const __dirname = path.resolve("dist");
 const PORT = 3000;
@@ -13,12 +14,13 @@ const server = http.createServer(app);
 startWsServer(server);
 
 /** HTTP **/ 
-app.set("view engine", "pug");
+app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
+app.engine("html", renderFile);
 app.use("/public", express.static(__dirname + "/public"));
 app.use("/shared", express.static(__dirname + "/shared"));
 
-app.get("/", (req, res) => res.render("home"));
+app.get("/", (req, res) => res.render("home.html"));
 app.get("/*", (req, res) => res.redirect("/"));
 
 
