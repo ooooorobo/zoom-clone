@@ -1,8 +1,8 @@
-import {CommonSocketMessage, ReqEnterChat} from "../../shared/model/dto";
-import {SocketControllerListener} from "../../utils/types";
-import {PayloadType} from "../../shared/enum";
+import {CommonSocketMessage, ReqEnterChat} from "../../../../shared/model/dto";
+import {ISocketController, SocketControllerListener} from "../../../../utils/types";
+import {PayloadType} from "../../../../shared/enum";
 
-export abstract class SocketController<SOCKET> {
+export abstract class SocketController<SOCKET> implements ISocketController {
     socket: SOCKET;
     listeners: Set<SocketControllerListener>;
 

@@ -1,7 +1,7 @@
-import {SocketController} from "./socket";
-import {CommonSocketMessage, OnMessageDone, MsgChatEntered, ReqEnterChat} from "../../shared/model/dto";
+import {SocketController} from "./SocketController";
+import {CommonSocketMessage, OnMessageDone, MsgChatEntered, ReqEnterChat} from "../../../../shared/model/dto";
 import {io, Socket} from "socket.io-client";
-import {PayloadType} from "../../shared/enum";
+import {PayloadType} from "../../../../shared/enum";
 
 export class SocketIoController extends SocketController<Socket>{
 

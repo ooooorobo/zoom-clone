@@ -7,6 +7,10 @@ body {
     box-sizing: border-box;
 }
 
+.hidden {
+    display: none !important;
+}
+
 input:focus {
     outline: none;
 }
@@ -22,10 +26,6 @@ main {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-}
-
-#room.hidden {
-    display: none;
 }
 
 #list {

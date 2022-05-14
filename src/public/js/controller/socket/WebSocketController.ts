@@ -1,5 +1,5 @@
-import {CommonSocketMessage} from "../../shared/model/dto";
-import {SocketController} from "./socket";
+import {CommonSocketMessage} from "../../../../shared/model/dto";
+import {SocketController} from "./SocketController";
 
 const SOCKET_ENDPOINT = `ws://${window.location.host}`;
 export class WebSocketController extends SocketController<WebSocket>{

@@ -1,5 +1,5 @@
-import {getFromStorage, saveToStorage} from "./storage";
-import {StorageKey} from "../../shared/enum";
+import {getFromStorage, saveToStorage} from "../util/StorageUtil";
+import {StorageKey} from "../../../shared/enum";
 
 export class DataStore {
     private static _INSTANCE: DataStore = new DataStore();
