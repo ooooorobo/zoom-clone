@@ -50,7 +50,7 @@ export class ChatroomView {
         const nickname = DataStore.instance.nickname;
         const input = DomUtil.getElementOrCreate<HTMLInputElement>(this.nicknameForm.querySelector("input"), "input");
         input.value = nickname;
-        DataStore.instance.setNickname(nickname);
+        DataStore.instance.nickname = nickname;
     }
 
     public onEnterRoom() {
@@ -116,7 +116,7 @@ export class ChatroomView {
                 roomName: DataStore.instance.room
             };
             this.socketController.sendSocketMessage(msg);
-            DataStore.instance.setNickname(this.nicknameInput.value);
+            DataStore.instance.nickname = this.nicknameInput.value;
         }
     }
 }

@@ -19,21 +19,21 @@ export class DataStore {
         return this._nickname;
     }
 
+    set nickname(nickname: string) {
+        this._nickname = nickname;
+        saveToStorage(StorageKey.NICKNAME, nickname);
+    }
+
     getDefaultNickname(): string {
         return getFromStorage(StorageKey.NICKNAME) || "익명";
     }
 
-    setNickname(nickname: string) {
-        this._nickname = nickname;
-        saveToStorage(StorageKey.NICKNAME, nickname);
-    }
 
     get room(): string | null {
         return this._room;
     }
 
-    setRoom(roomName: string) {
+    set room(roomName: string | null) {
         this._room = roomName;
-        console.log(this._room);
     }
 }

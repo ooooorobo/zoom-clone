@@ -27,7 +27,7 @@ export class HomeView {
 
     private enterRoom(roomName: string) {
         this.welcome.hidden = true;
-        DataStore.instance.setRoom(roomName);
+        DataStore.instance.room = roomName;
         this.onEnterRoom();
     }
 
