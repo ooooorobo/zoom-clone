@@ -12,9 +12,10 @@ import {
 
 export default function createWsServer(httpServer: Server) {
     const io = new IOServer(httpServer);
-    let socketNickname = "";
 
     io.on("connection", socket => {
+        let socketNickname = "";
+
         socket.on(PayloadType.REQ_CHAT_ENTER, ({roomName, nickname}: ReqEnterChat, done) => {
             try {
                 socket.join(roomName);
@@ -47,6 +48,13 @@ export default function createWsServer(httpServer: Server) {
             } catch (e) {
                 done({result: false});
             }
+        });
+
+        socket.on("disconnecting", () => {
+            socket.to(Array.from(socket.rooms.values())).emit(PayloadType.CHAT_LEFT, {
+                type: PayloadType.CHAT_LEFT,
+                nickname: socketNickname
+            } as MsgChatLeft);
         });
     });
 
