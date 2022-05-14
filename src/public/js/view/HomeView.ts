@@ -13,10 +13,8 @@ export class HomeView {
     ) {
         this.welcome = DomUtil.getElementOrCreate(document.getElementById("welcome"), "div");
         this.form = DomUtil.getElementOrCreate(this.welcome.querySelector("form"), "form");
-        // bind this
-        this.handleRoomSubmit.bind(this);
         // add event handler
-        this.form.addEventListener("submit", this.handleRoomSubmit);
+        this.form.addEventListener("submit", this.handleRoomSubmit.bind(this));
         // init view
         this.init();
     }

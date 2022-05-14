@@ -7,7 +7,6 @@ export interface CommonSocketMessage {
 export interface ReqSendMessage extends CommonSocketMessage {
     type: PayloadType.REQ_CHAT_SEND_MESSAGE;
     message: string;
-    nickname: string;
     room: string;
 }
 
@@ -25,7 +24,6 @@ export interface ReqChangeNickname extends CommonSocketMessage {
     type: PayloadType.REQ_NICKNAME_CHANGE;
     nickname: string;
     roomName: string;
-    preNickname: string;
 }
 
 export interface MsgChatEntered extends CommonSocketMessage {
@@ -45,7 +43,6 @@ export interface MsgChatNicknameChanged extends CommonSocketMessage {
     type: PayloadType.NICKNAME_CHANGED;
     preNickname: string;
     nowNickname: string;
-
 }
 
 export interface MsgChatLeft extends CommonSocketMessage {

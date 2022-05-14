@@ -30,15 +30,10 @@ export class ChatroomView {
         this.chatInput = DomUtil.getElementOrCreate<HTMLInputElement>(this.messageForm.querySelector("input"), "input");
         this.nicknameForm = DomUtil.getElementOrCreate<HTMLElement>(document.getElementById("nick"), "form");
         this.nicknameInput = DomUtil.getElementOrCreate<HTMLInputElement>(this.nicknameForm.querySelector("input"), "input");
-        // bind this
-        this.handleSubmit.bind(this);
-        this.handleNickSubmit.bind(this);
-        this.onReceiveMessage.bind(this);
-        this.onEnterRoom.bind(this);
         // add event handler
-        this.socketController.addListener({onReceiveMessage: this.onReceiveMessage});
-        this.messageForm.addEventListener("submit", this.handleSubmit);
-        this.nicknameForm.addEventListener("submit", this.handleNickSubmit);
+        this.socketController.addListener({onReceiveMessage: this.onReceiveMessage.bind(this)});
+        this.messageForm.addEventListener("submit", this.handleSubmit.bind(this));
+        this.nicknameForm.addEventListener("submit", this.handleNickSubmit.bind(this));
         // init view
         this.init();
     }
@@ -97,7 +92,6 @@ export class ChatroomView {
             const msg: ReqSendMessage = {
                 type: PayloadType.REQ_CHAT_SEND_MESSAGE,
                 message: chat,
-                nickname: DataStore.instance.nickname,
                 room: DataStore.instance.room
             };
             this.socketController.sendSocketMessage(msg);
@@ -112,7 +106,6 @@ export class ChatroomView {
             const msg: ReqChangeNickname = {
                 type: PayloadType.REQ_NICKNAME_CHANGE,
                 nickname: this.nicknameInput.value,
-                preNickname: DataStore.instance.nickname,
                 roomName: DataStore.instance.room
             };
             this.socketController.sendSocketMessage(msg);

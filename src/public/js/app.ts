@@ -5,7 +5,7 @@ import {SocketIoController} from "./controller/socket/SocketIOController";
 
 const createView = (socketController: ISocketController) => {
     const chatroomView = new ChatroomView(socketController);
-    new HomeView(socketController, chatroomView.onEnterRoom);
+    new HomeView(socketController, chatroomView.onEnterRoom.bind(chatroomView));
 };
 
 const socketController = SocketIoController.instance;
