@@ -7,7 +7,8 @@ export interface CommonSocketMessage {
 export interface ReqSendMessage extends CommonSocketMessage {
     type: PayloadType.REQ_CHAT_SEND_MESSAGE;
     message: string;
-
+    nickname: string;
+    room: string;
 }
 
 export interface ReqEnterChat extends CommonSocketMessage {
@@ -16,14 +17,15 @@ export interface ReqEnterChat extends CommonSocketMessage {
     roomName: string;
 }
 
-export interface DoneEnterChat extends CommonSocketMessage {
-    entered: boolean;
+export interface OnMessageDone {
+    result: boolean;
 }
 
 export interface ReqChangeNickname extends CommonSocketMessage {
     type: PayloadType.REQ_NICKNAME_CHANGE;
     nickname: string;
-
+    roomName: string;
+    preNickname: string;
 }
 
 export interface MsgChatEntered extends CommonSocketMessage {

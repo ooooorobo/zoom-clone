@@ -1,10 +1,28 @@
 import {SocketIoController} from "./socketio";
+import {CommonSocketMessage} from "../../shared/model/dto";
+import {PayloadType} from "../../shared/enum";
+import {getElementOrCreate} from "./domUtil";
+import "./chatroom";
+import {DataStore} from "./store";
 
 const socketController = SocketIoController.instance;
 
-function getElementOrCreate<HTMLELEMENT extends HTMLElement>(selector: HTMLELEMENT | null, tagName: string): HTMLELEMENT {
-    return selector || (document.createElement(tagName) as HTMLELEMENT);
+function handleSocketMessage(payload: CommonSocketMessage) {
+    switch (payload.type) {
+    case PayloadType.CHAT_ENTERED:
+        break;
+    case PayloadType.CHAT_LEFT:
+        break;
+    case PayloadType.NICKNAME_CHANGED:
+        break;
+    case PayloadType.CHAT_NEW_MESSAGE:
+        break;
+    default:
+        break;
+    }
 }
+socketController.addListener({onReceiveMessage: handleSocketMessage});
+
 
 const welcome = getElementOrCreate(document.getElementById("welcome"), "div");
 const form = getElementOrCreate(welcome.querySelector("form"), "form");
@@ -16,20 +34,21 @@ init();
 
 function init() {
     welcome.hidden = false;
-    room.hidden = true;
+    room.classList.add("hidden");
 }
 
 function enterRoom(roomName: string) {
     welcome.hidden = true;
-    room.hidden = false;
+    room.classList.remove("hidden");
     roomTitle.innerText = roomName;
+    DataStore.instance.setRoom(roomName);
 }
 
 function handleRoomSubmit(e: Event) {
     e.preventDefault();
     const input = getElementOrCreate(form.querySelector("input"), "input");
     const roomName = input.value;
-    socketController.enterRoom("익명", roomName, (entered) => entered && enterRoom(roomName));
+    socketController.enterRoom(DataStore.instance.nickname, roomName, (entered) => entered && enterRoom(roomName));
     input.value = "";
 }
 
