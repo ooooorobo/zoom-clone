@@ -5,7 +5,6 @@ import {
     MsgChatLeft,
     MsgChatNewMessage,
     MsgChatNicknameChanged,
-    ReqChangeNickname,
     ReqSendMessage
 } from "../../../shared/model/dto";
 import {DomUtil} from "../util/DomUtil";
@@ -19,8 +18,6 @@ export class ChatroomView {
     private messageList: HTMLElement;
     private messageForm: HTMLElement;
     private chatInput: HTMLInputElement;
-    private nicknameForm: HTMLElement;
-    private nicknameInput: HTMLInputElement;
 
     constructor(private socketController: ISocketController) {
         this.room = DomUtil.getElementOrCreate(document.getElementById("room"), "div");
@@ -28,12 +25,9 @@ export class ChatroomView {
         this.messageList = DomUtil.getElementOrCreate<HTMLElement>(document.querySelector("#list"), "div");
         this.messageForm = DomUtil.getElementOrCreate<HTMLElement>(document.querySelector("#chat"), "form");
         this.chatInput = DomUtil.getElementOrCreate<HTMLInputElement>(this.messageForm.querySelector("input"), "input");
-        this.nicknameForm = DomUtil.getElementOrCreate<HTMLElement>(document.getElementById("nick"), "form");
-        this.nicknameInput = DomUtil.getElementOrCreate<HTMLInputElement>(this.nicknameForm.querySelector("input"), "input");
         // add event handler
         this.socketController.addListener({onReceiveMessage: this.onReceiveMessage.bind(this)});
-        this.messageForm.addEventListener("submit", this.handleSubmit.bind(this));
-        this.nicknameForm.addEventListener("submit", this.handleNickSubmit.bind(this));
+        this.messageForm.addEventListener("submit", this.handleSubmitChatMessage.bind(this));
         // init view
         this.init();
     }
@@ -41,11 +35,6 @@ export class ChatroomView {
     private init(){
         this.room.classList.remove("hidden");
         DomUtil.hideElement(this.room);
-
-        const nickname = DataStore.instance.nickname;
-        const input = DomUtil.getElementOrCreate<HTMLInputElement>(this.nicknameForm.querySelector("input"), "input");
-        input.value = nickname;
-        DataStore.instance.nickname = nickname;
     }
 
     public onEnterRoom() {
@@ -53,7 +42,7 @@ export class ChatroomView {
         DomUtil.showElement(this.room);
     }
 
-    private addNewMessage(type: MessageType, message: string){
+    public addNewMessage(type: MessageType, message: string){
         const element = document.createElement("div");
         element.className = `message ${type}`;
         element.innerText = message;
@@ -85,7 +74,7 @@ export class ChatroomView {
         }
     }
 
-    private handleSubmit (e: Event) {
+    private handleSubmitChatMessage(e: Event) {
         e.preventDefault();
         if (DataStore.instance.room) {
             const chat = this.chatInput.value;
@@ -94,22 +83,10 @@ export class ChatroomView {
                 message: chat,
                 room: DataStore.instance.room
             };
-            this.socketController.sendSocketMessage(msg);
-            this.addNewMessage(MESSAGE_TYPE.MINE, `나: ${chat}`);
-            this.chatInput.value = "";
-        }
-    }
-
-    private handleNickSubmit (e: Event) {
-        e.preventDefault();
-        if (this.nicknameInput.value !== DataStore.instance.nickname && DataStore.instance.room) {
-            const msg: ReqChangeNickname = {
-                type: PayloadType.REQ_NICKNAME_CHANGE,
-                nickname: this.nicknameInput.value,
-                roomName: DataStore.instance.room
-            };
-            this.socketController.sendSocketMessage(msg);
-            DataStore.instance.nickname = this.nicknameInput.value;
+            this.socketController.sendSocketMessage(msg, () => {
+                this.addNewMessage(MESSAGE_TYPE.MINE, `나: ${chat}`);
+                this.chatInput.value = "";
+            });
         }
     }
 }
