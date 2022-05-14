@@ -16,6 +16,10 @@ export interface ReqEnterChat extends CommonSocketMessage {
     roomName: string;
 }
 
+export interface DoneEnterChat extends CommonSocketMessage {
+    entered: boolean;
+}
+
 export interface ReqChangeNickname extends CommonSocketMessage {
     type: PayloadType.REQ_NICKNAME_CHANGE;
     nickname: string;

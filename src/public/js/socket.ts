@@ -27,8 +27,9 @@ export abstract class SocketController<SOCKET> {
 
     abstract sendSocketMessage(payload: CommonSocketMessage): void;
 
-    enterRoom(nickname: string, roomName: string) {
+    enterRoom(nickname: string, roomName: string, onEnterRoom?: (entered: boolean) => any) {
         const msg: ReqEnterChat = {type: PayloadType.REQ_CHAT_ENTER, nickname, roomName};
         this.sendSocketMessage(msg);
+        onEnterRoom?.(true);
     }
 }

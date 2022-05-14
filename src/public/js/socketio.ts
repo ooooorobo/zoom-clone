@@ -1,8 +1,6 @@
 import {SocketController} from "./socket";
-import {CommonSocketMessage, ReqEnterChat} from "../../shared/model/dto";
-// eslint-disable-next-line
-// @ts-ignore
-import {io, Socket} from "socket-io-client";
+import {CommonSocketMessage, DoneEnterChat, ReqEnterChat} from "../../shared/model/dto";
+import {io, Socket} from "socket.io-client";
 import {PayloadType} from "../../shared/enum";
 
 export class SocketIoController extends SocketController<Socket>{
@@ -21,12 +19,12 @@ export class SocketIoController extends SocketController<Socket>{
         //
     }
 
-    sendSocketMessage(payload: CommonSocketMessage) {
-        this.socket.emit(payload.type, payload);
+    sendSocketMessage<CALLBACK_PARAM>(payload: CommonSocketMessage, callback?: (res: CALLBACK_PARAM) => void) {
+        this.socket.emit(payload.type, payload, callback);
     }
 
-    enterRoom(nickname: string, roomName: string) {
+    enterRoom(nickname: string, roomName: string, onEnterRoom?: (entered: boolean) => any) {
         const msg: ReqEnterChat = {type: PayloadType.REQ_CHAT_ENTER, nickname, roomName};
-        this.sendSocketMessage(msg);
+        this.sendSocketMessage<DoneEnterChat>(msg, ({entered}) => onEnterRoom?.(entered));
     }
 }
