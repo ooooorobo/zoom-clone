@@ -1,5 +1,5 @@
 export namespace DomUtil {
-    export function getElementOrCreate<HTMLELEMENT extends HTMLElement>(selector: HTMLELEMENT | null, tagName: string): HTMLELEMENT {
+    export function getElementOrCreate<HTMLELEMENT extends HTMLElement>(selector: HTMLELEMENT | null, tagName = "div"): HTMLELEMENT {
         return selector || (document.createElement(tagName) as HTMLELEMENT);
     }
 

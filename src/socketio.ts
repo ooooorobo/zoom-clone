@@ -4,7 +4,7 @@ import {PayloadType} from "./shared/enum";
 import {
     MsgChatEntered, MsgChatLeft,
     MsgChatNewMessage,
-    MsgChatNicknameChanged,
+    MsgChatNicknameChanged, MsgRoomChanged,
     ReqChangeNickname,
     ReqEnterChat,
     ReqSendMessage
@@ -16,12 +16,19 @@ export default function createWsServer(httpServer: Server) {
     io.on("connection", socket => {
         let socketNickname = "";
 
+        const emitRoomChanged = () => {
+            io.sockets.emit(PayloadType.ROOM_CHANGED, {type: PayloadType.ROOM_CHANGED, rooms: getPublicRoomList(io)} as MsgRoomChanged);
+        };
+
+        emitRoomChanged();
+        
         socket.on(PayloadType.REQ_CHAT_ENTER, ({roomName, nickname}: ReqEnterChat, done) => {
             try {
                 socket.join(roomName);
                 done({result: true});
                 socketNickname = nickname;
                 socket.to(roomName).emit(PayloadType.CHAT_ENTERED, {type: PayloadType.CHAT_ENTERED, nickname} as MsgChatEntered);
+                emitRoomChanged();
             } catch (e) {
                 done({result: false});
             }
@@ -50,12 +57,20 @@ export default function createWsServer(httpServer: Server) {
             }
         });
 
-        socket.on("disconnecting", () => {
+        socket.on("disconnect", () => {
             socket.to(Array.from(socket.rooms.values())).emit(PayloadType.CHAT_LEFT, {
                 type: PayloadType.CHAT_LEFT,
                 nickname: socketNickname
             } as MsgChatLeft);
+            emitRoomChanged();
         });
     });
 
+}
+
+function getPublicRoomList(io: IOServer): string[] {
+    const {sockets: {adapter: {sids, rooms}}} = io;
+    const publicRooms: string[] = [];
+    rooms.forEach((_, key) => {!sids.has(key) && publicRooms.push(key);});
+    return publicRooms;
 }

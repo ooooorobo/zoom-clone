@@ -50,4 +50,7 @@ export interface MsgChatLeft extends CommonSocketMessage {
     nickname: string;
 }
 
-
+export interface MsgRoomChanged extends CommonSocketMessage {
+    type: PayloadType.ROOM_CHANGED;
+    rooms: string[]
+}
