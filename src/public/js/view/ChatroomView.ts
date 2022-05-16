@@ -14,6 +14,7 @@ import {ISocketController} from "../../../utils/types";
 export class ChatroomView {
     private room: HTMLElement;
     private roomTitle: HTMLElement;
+    private userCount: HTMLElement;
 
     private messageList: HTMLElement;
     private messageForm: HTMLElement;
@@ -22,6 +23,7 @@ export class ChatroomView {
     constructor(private socketController: ISocketController) {
         this.room = DomUtil.getElementOrCreate(document.getElementById("room"), "div");
         this.roomTitle = DomUtil.getElementOrCreate(this.room.querySelector("h3"), "h3");
+        this.userCount = DomUtil.getElementOrCreate(this.room.querySelector("h4"));
         this.messageList = DomUtil.getElementOrCreate<HTMLElement>(document.querySelector("#list"), "div");
         this.messageForm = DomUtil.getElementOrCreate<HTMLElement>(document.querySelector("#chat"), "form");
         this.chatInput = DomUtil.getElementOrCreate<HTMLInputElement>(this.messageForm.querySelector("input"), "input");
@@ -37,8 +39,13 @@ export class ChatroomView {
         DomUtil.hideElement(this.room);
     }
 
-    public onEnterRoom() {
+    private updateUserCountView(userCount: number) {
+        this.userCount.innerText = `${userCount}명 채팅중`;
+    }
+
+    public onEnterRoom(userCount: number) {
         this.roomTitle.innerText = DataStore.instance.room || "";
+        this.updateUserCountView(userCount);
         DomUtil.showElement(this.room);
     }
 
@@ -57,13 +64,15 @@ export class ChatroomView {
             break;
         }
         case PayloadType.CHAT_ENTERED: {
-            const {nickname}: MsgChatEntered = payload as MsgChatEntered;
+            const {nickname, userCount}: MsgChatEntered = payload as MsgChatEntered;
             this.addNewMessage(MESSAGE_TYPE.ALERT, `📣 ${nickname} 님, 환영합니다! 🎉`);
+            this.updateUserCountView(userCount);
             break;
         }
         case PayloadType.CHAT_LEFT: {
-            const {nickname}: MsgChatLeft = payload as MsgChatLeft;
+            const {nickname, userCount}: MsgChatLeft = payload as MsgChatLeft;
             this.addNewMessage(MESSAGE_TYPE.ALERT, `📣 ${nickname} 님, 안녕히 가세요. 😢`);
+            this.updateUserCountView(userCount);
             break;
         }
         case PayloadType.NICKNAME_CHANGED: {

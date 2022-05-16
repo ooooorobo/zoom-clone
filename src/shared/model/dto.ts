@@ -20,6 +20,10 @@ export interface OnMessageDone {
     result: boolean;
 }
 
+export interface EnterRoomDone extends OnMessageDone {
+    userCount: number;
+}
+
 export interface ReqChangeNickname extends CommonSocketMessage {
     type: PayloadType.REQ_NICKNAME_CHANGE;
     nickname: string;
@@ -29,6 +33,7 @@ export interface ReqChangeNickname extends CommonSocketMessage {
 export interface MsgChatEntered extends CommonSocketMessage {
     type: PayloadType.CHAT_ENTERED;
     nickname: string;
+    userCount: number;
 }
 
 
@@ -48,6 +53,7 @@ export interface MsgChatNicknameChanged extends CommonSocketMessage {
 export interface MsgChatLeft extends CommonSocketMessage {
     type: PayloadType.CHAT_LEFT;
     nickname: string;
+    userCount: number;
 }
 
 export interface MsgRoomChanged extends CommonSocketMessage {

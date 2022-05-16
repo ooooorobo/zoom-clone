@@ -11,7 +11,7 @@ export class HomeView {
 
     constructor(
         private socketController: ISocketController,
-        private onEnterRoom: () => void
+        private onEnterRoom: (userCount: number) => void
     ) {
         this.welcome = DomUtil.getElementOrCreate(document.getElementById("welcome"), "div");
         this.form = DomUtil.getElementOrCreate(this.welcome.querySelector("form"), "form");
@@ -50,16 +50,20 @@ export class HomeView {
     }
 
     private enterRoom(roomName: string) {
-        DomUtil.hideElement(this.welcome);
-        DataStore.instance.room = roomName;
-        this.onEnterRoom();
+        this.socketController.enterRoom(DataStore.instance.nickname, roomName, (res) => {
+            if (res.result) {
+                DomUtil.hideElement(this.welcome);
+                DataStore.instance.room = roomName;
+                this.onEnterRoom(res.userCount);
+            }
+        });
     }
 
     private handleRoomSubmit(e: Event) {
         e.preventDefault();
         const input = DomUtil.getElementOrCreate(this.form.querySelector("input"), "input");
         const roomName = input.value;
-        this.socketController.enterRoom(DataStore.instance.nickname, roomName, (entered) => entered && this.enterRoom(roomName));
+        this.enterRoom(roomName);
         input.value = "";
     }
 }

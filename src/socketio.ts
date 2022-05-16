@@ -2,6 +2,7 @@ import {Server} from "http";
 import {Server as IOServer} from "socket.io";
 import {PayloadType} from "./shared/enum";
 import {
+    EnterRoomDone,
     MsgChatEntered, MsgChatLeft,
     MsgChatNewMessage,
     MsgChatNicknameChanged, MsgRoomChanged,
@@ -17,29 +18,47 @@ export default function createWsServer(httpServer: Server) {
         let socketNickname = "";
 
         const emitRoomChanged = () => {
-            io.sockets.emit(PayloadType.ROOM_CHANGED, {type: PayloadType.ROOM_CHANGED, rooms: getPublicRoomList(io)} as MsgRoomChanged);
+            io.sockets.emit(PayloadType.ROOM_CHANGED, {
+                type: PayloadType.ROOM_CHANGED,
+                rooms: getPublicRoomList(io)
+            } as MsgRoomChanged);
+        };
+
+        const getUserCountInRoom = (roomName: string) => {
+            return io.sockets.adapter.rooms.get(roomName)?.size;
         };
 
         emitRoomChanged();
-        
+
         socket.on(PayloadType.REQ_CHAT_ENTER, ({roomName, nickname}: ReqEnterChat, done) => {
             try {
                 socket.join(roomName);
-                done({result: true});
                 socketNickname = nickname;
-                socket.to(roomName).emit(PayloadType.CHAT_ENTERED, {type: PayloadType.CHAT_ENTERED, nickname} as MsgChatEntered);
+                const userCount = getUserCountInRoom(roomName);
+                socket.to(roomName).emit(PayloadType.CHAT_ENTERED, {
+                    type: PayloadType.CHAT_ENTERED,
+                    nickname,
+                    userCount
+                } as MsgChatEntered);
                 emitRoomChanged();
+                done({result: true, userCount} as EnterRoomDone);
             } catch (e) {
                 done({result: false});
+                console.error(e);
             }
         });
 
         socket.on(PayloadType.REQ_CHAT_SEND_MESSAGE, ({message, room}: ReqSendMessage, done) => {
             try {
-                socket.to(room).emit(PayloadType.CHAT_NEW_MESSAGE, {type: PayloadType.CHAT_NEW_MESSAGE, nickname: socketNickname, message} as MsgChatNewMessage);
+                socket.to(room).emit(PayloadType.CHAT_NEW_MESSAGE, {
+                    type: PayloadType.CHAT_NEW_MESSAGE,
+                    nickname: socketNickname,
+                    message
+                } as MsgChatNewMessage);
                 done({result: true});
             } catch (e) {
                 done({result: false});
+                console.error(e);
             }
         });
 
@@ -54,14 +73,21 @@ export default function createWsServer(httpServer: Server) {
                 done({result: true});
             } catch (e) {
                 done({result: false});
+                console.error(e);
             }
         });
 
+        socket.on("disconnecting", () => {
+            socket.rooms.forEach(roomName => {
+                socket.to(roomName).emit(PayloadType.CHAT_LEFT, {
+                    type: PayloadType.CHAT_LEFT,
+                    nickname: socketNickname,
+                    userCount: getUserCountInRoom(roomName)
+                } as MsgChatLeft);
+            });
+        });
+
         socket.on("disconnect", () => {
-            socket.to(Array.from(socket.rooms.values())).emit(PayloadType.CHAT_LEFT, {
-                type: PayloadType.CHAT_LEFT,
-                nickname: socketNickname
-            } as MsgChatLeft);
             emitRoomChanged();
         });
     });
@@ -71,6 +97,8 @@ export default function createWsServer(httpServer: Server) {
 function getPublicRoomList(io: IOServer): string[] {
     const {sockets: {adapter: {sids, rooms}}} = io;
     const publicRooms: string[] = [];
-    rooms.forEach((_, key) => {!sids.has(key) && publicRooms.push(key);});
+    rooms.forEach((_, key) => {
+        !sids.has(key) && publicRooms.push(key);
+    });
     return publicRooms;
 }

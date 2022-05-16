@@ -1,4 +1,4 @@
-import {CommonSocketMessage, ReqEnterChat} from "../../../../shared/model/dto";
+import {CommonSocketMessage, EnterRoomDone, ReqEnterChat} from "../../../../shared/model/dto";
 import {ISocketController, SocketControllerListener} from "../../../../utils/types";
 import {PayloadType} from "../../../../shared/enum";
 
@@ -27,9 +27,9 @@ export abstract class SocketController<SOCKET> implements ISocketController {
 
     abstract sendSocketMessage(payload: CommonSocketMessage): void;
 
-    enterRoom(nickname: string, roomName: string, onEnterRoom?: (entered: boolean) => any) {
+    enterRoom(nickname: string, roomName: string, onEnterRoom?: (res: EnterRoomDone) => any) {
         const msg: ReqEnterChat = {type: PayloadType.REQ_CHAT_ENTER, nickname, roomName};
         this.sendSocketMessage(msg);
-        onEnterRoom?.(true);
+        onEnterRoom?.({result: true, userCount: 0});
     }
 }

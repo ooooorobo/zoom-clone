@@ -34,6 +34,6 @@ export class DataStore {
     }
 
     set room(roomName: string | null) {
-        this._room = roomName;
+        this._room = (roomName || "").toString();
     }
 }

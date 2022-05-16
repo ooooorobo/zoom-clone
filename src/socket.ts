@@ -30,7 +30,7 @@ export default function startWsServer(httpServer: Server) {
         const socket = sockets.get(id);
         if (socket) {
             socket.nickname = nickname;
-            const msg: MsgChatEntered = {type: PayloadType.CHAT_ENTERED, nickname};
+            const msg: MsgChatEntered = {type: PayloadType.CHAT_ENTERED, nickname, userCount: 0};
             sendMessageToAll(null, msg);
         }
     };
@@ -85,7 +85,7 @@ export default function startWsServer(httpServer: Server) {
 
     const onSocketClosed = (id: string) => {
         console.log(`❌ 클라이언트 연결 끊김, 현재 ${sockets.size}개 연결중`);
-        const msg: MsgChatLeft = {type: PayloadType.CHAT_LEFT, nickname: sockets.get(id)?.nickname || "알 수 없음"};
+        const msg: MsgChatLeft = {type: PayloadType.CHAT_LEFT, nickname: sockets.get(id)?.nickname || "알 수 없음", userCount: 0};
         sendMessageToAll(null, msg);
         sockets.delete(id);
     };
