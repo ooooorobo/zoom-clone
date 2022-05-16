@@ -21,7 +21,6 @@ app.use("/public", express.static(__dirname + "/public"));
 app.use("/shared", express.static(__dirname + "/shared"));
 
 app.get("/", (req, res) => res.render("home.html"));
-app.get("/*", (req, res) => res.redirect("/"));
 
 
 const handleListen = () => console.log(`http://localhost:${PORT} 에서 서버 실행 중`);

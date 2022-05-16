@@ -1,5 +1,6 @@
 import {Server} from "http";
 import {Server as IOServer} from "socket.io";
+import {instrument} from "@socket.io/admin-ui";
 import {PayloadType} from "./shared/enum";
 import {
     EnterRoomDone,
@@ -12,7 +13,15 @@ import {
 } from "./shared/model/dto";
 
 export default function createWsServer(httpServer: Server) {
-    const io = new IOServer(httpServer);
+    // https://admin.socket.io/ 에서 접속
+    const io = new IOServer(httpServer, {
+        cors: {
+            origin: ["https://admin.socket.io"],
+            credentials: true
+        }
+    });
+
+    instrument(io, {auth: false});
 
     io.on("connection", socket => {
         let socketNickname = "";
@@ -25,7 +34,7 @@ export default function createWsServer(httpServer: Server) {
         };
 
         const getUserCountInRoom = (roomName: string) => {
-            return io.sockets.adapter.rooms.get(roomName)?.size;
+            return io.sockets.adapter.rooms.get(roomName)?.size || 0;
         };
 
         emitRoomChanged();
@@ -82,7 +91,7 @@ export default function createWsServer(httpServer: Server) {
                 socket.to(roomName).emit(PayloadType.CHAT_LEFT, {
                     type: PayloadType.CHAT_LEFT,
                     nickname: socketNickname,
-                    userCount: getUserCountInRoom(roomName)
+                    userCount: getUserCountInRoom(roomName) - 1
                 } as MsgChatLeft);
             });
         });
