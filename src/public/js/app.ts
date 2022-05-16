@@ -1,14 +1,11 @@
-import {ISocketController} from "../../utils/types";
-import {HomeView} from "./view/HomeView";
-import {ChatroomView} from "./view/ChatroomView";
-import {SocketIoController} from "./controller/socket/SocketIOController";
-import {NicknameView} from "./view/NicknameView";
+import {VideoView} from "./view/VideoView";
 
-const createView = (socketController: ISocketController) => {
-    const chatroomView = new ChatroomView(socketController);
-    new NicknameView(socketController, chatroomView.addNewMessage.bind(chatroomView));
-    new HomeView(socketController, chatroomView.onEnterRoom.bind(chatroomView));
+// param socketController?: ISocketController
+const createView = () => {
+    new VideoView();
+    // const chatroomView = new ChatroomView(socketController);
+    // new NicknameView(socketController, chatroomView.addNewMessage.bind(chatroomView));
+    // new HomeView(socketController, chatroomView.onEnterRoom.bind(chatroomView));
 };
 
-const socketController = SocketIoController.instance;
-createView(socketController);
+createView();
