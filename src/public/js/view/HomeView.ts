@@ -3,9 +3,9 @@ import {DataStore} from "../dc/DataStore";
 import {ISocketController} from "../../../utils/types";
 import {CommonSocketMessage, MsgRoomChanged} from "../../../shared/model/dto";
 import {PayloadType} from "../../../shared/enum";
+import {View} from "./View";
 
-export class HomeView {
-    private welcome: HTMLElement;
+export class HomeView extends View {
     private form: HTMLElement;
     private roomList: HTMLElement;
 
@@ -13,8 +13,10 @@ export class HomeView {
         private socketController: ISocketController,
         private onEnterRoom: (userCount: number) => void
     ) {
-        this.welcome = DomUtil.getElementOrCreate(document.getElementById("welcome"), "div");
-        this.form = DomUtil.getElementOrCreate(this.welcome.querySelector("form"), "form");
+        super();
+
+        this.container = DomUtil.getElementOrCreate(document.getElementById("welcome"), "div");
+        this.form = DomUtil.getElementOrCreate(this.container.querySelector("form"), "form");
         this.roomList = DomUtil.getElementOrCreate(document.getElementById("room-list"), "div");
         // add event handler
         this.form.addEventListener("submit", this.handleRoomSubmit.bind(this));
@@ -24,7 +26,7 @@ export class HomeView {
     }
 
     private init() {
-        DomUtil.showElement(this.welcome);
+        DomUtil.showElement(this.container);
     }
 
     private onReceiveMessage (payload: CommonSocketMessage) {
@@ -52,7 +54,7 @@ export class HomeView {
     private enterRoom(roomName: string) {
         this.socketController.enterRoom(DataStore.instance.nickname, roomName, (res) => {
             if (res.result) {
-                DomUtil.hideElement(this.welcome);
+                DomUtil.hideElement(this.container);
                 DataStore.instance.room = roomName;
                 this.onEnterRoom(res.userCount);
             }

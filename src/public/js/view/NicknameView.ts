@@ -3,18 +3,19 @@ import {DataStore} from "../dc/DataStore";
 import {ReqChangeNickname} from "../../../shared/model/dto";
 import {MESSAGE_TYPE, MessageType, PayloadType} from "../../../shared/enum";
 import {ISocketController} from "../../../utils/types";
+import {View} from "./View";
 
-export class NicknameView {
-    private nicknameForm: HTMLElement;
+export class NicknameView extends View{
     private nicknameInput: HTMLInputElement;
 
     constructor(
         private socketController: ISocketController,
         private addNewMessage: (messageType: MessageType, message: string) => void
     ) {
-        this.nicknameForm = DomUtil.getElementOrCreate<HTMLElement>(document.getElementById("nick"), "form");
-        this.nicknameInput = DomUtil.getElementOrCreate<HTMLInputElement>(this.nicknameForm.querySelector("input"), "input");
-        this.nicknameForm.addEventListener("submit", this.handleNickSubmit.bind(this));
+        super();
+        this.container = DomUtil.getElementOrCreate<HTMLElement>(document.getElementById("nick"), "form");
+        this.nicknameInput = DomUtil.getElementOrCreate<HTMLInputElement>(this.container.querySelector("input"), "input");
+        this.container.addEventListener("submit", this.handleNickSubmit.bind(this));
 
         this.init();
     }

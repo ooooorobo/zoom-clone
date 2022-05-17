@@ -10,9 +10,9 @@ import {
 import {DomUtil} from "../util/DomUtil";
 import {DataStore} from "../dc/DataStore";
 import {ISocketController} from "../../../utils/types";
+import {View} from "./View";
 
-export class ChatroomView {
-    private room: HTMLElement;
+export class ChatroomView extends View {
     private roomTitle: HTMLElement;
     private userCount: HTMLElement;
 
@@ -21,9 +21,11 @@ export class ChatroomView {
     private chatInput: HTMLInputElement;
 
     constructor(private socketController: ISocketController) {
-        this.room = DomUtil.getElementOrCreate(document.getElementById("room"), "div");
-        this.roomTitle = DomUtil.getElementOrCreate(this.room.querySelector("h3"), "h3");
-        this.userCount = DomUtil.getElementOrCreate(this.room.querySelector("h4"));
+        super();
+        
+        this.container = DomUtil.getElementOrCreate(document.getElementById("room"), "div");
+        this.roomTitle = DomUtil.getElementOrCreate(this.container.querySelector("h3"), "h3");
+        this.userCount = DomUtil.getElementOrCreate(this.container.querySelector("h4"));
         this.messageList = DomUtil.getElementOrCreate<HTMLElement>(document.querySelector("#list"), "div");
         this.messageForm = DomUtil.getElementOrCreate<HTMLElement>(document.querySelector("#chat"), "form");
         this.chatInput = DomUtil.getElementOrCreate<HTMLInputElement>(this.messageForm.querySelector("input"), "input");
@@ -35,8 +37,8 @@ export class ChatroomView {
     }
 
     private init(){
-        this.room.classList.remove("hidden");
-        DomUtil.hideElement(this.room);
+        this.container.classList.remove("hidden");
+        DomUtil.hideElement(this.container);
     }
 
     private updateUserCountView(userCount: number) {
@@ -46,7 +48,7 @@ export class ChatroomView {
     public onEnterRoom(userCount: number) {
         this.roomTitle.innerText = DataStore.instance.room || "";
         this.updateUserCountView(userCount);
-        DomUtil.showElement(this.room);
+        DomUtil.showElement(this.container);
     }
 
     public addNewMessage(type: MessageType, message: string){

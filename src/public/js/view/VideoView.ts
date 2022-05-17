@@ -1,6 +1,7 @@
 import {DomUtil} from "../util/DomUtil";
+import {View} from "./View";
 
-export class VideoView {
+export class VideoView extends View {
     private myFace: HTMLVideoElement;
     private muteBtn: HTMLElement;
     private cameraBtn: HTMLElement;
@@ -12,6 +13,10 @@ export class VideoView {
     private cameraEnabled = false;
 
     constructor() {
+        super();
+
+        this.container = DomUtil.getElementOrCreate(document.getElementById("myStream"));
+
         this.myFace = DomUtil.getElementOrCreate<HTMLVideoElement>(document.getElementById("myFace") as HTMLVideoElement, "video");
         this.muteBtn = DomUtil.getElementOrCreate(document.getElementById("mute"), "button");
         this.cameraBtn = DomUtil.getElementOrCreate(document.getElementById("camera"), "button");
@@ -20,8 +25,6 @@ export class VideoView {
         this.muteBtn.addEventListener("click", () => this.handleMuteClick(true));
         this.cameraBtn.addEventListener("click", () => this.handleCameraClick(true));
         this.camSelect.addEventListener("input", this.handleCameraChange.bind(this));
-        
-        this.init();
     }
 
     private async init(): Promise<void> {
