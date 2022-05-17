@@ -27,11 +27,12 @@ export class VideoView extends View {
         this.camSelect.addEventListener("input", this.handleCameraChange.bind(this));
     }
 
-    private async init(): Promise<void> {
+    public async startVideo(): Promise<void> {
         await this.getMedia();
         this.handleCameraClick(false);
         this.handleMuteClick(false);
         this.showCameraList();
+        this.show();
     }
 
     private async showCameraList(): Promise<void> {

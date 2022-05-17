@@ -10,7 +10,7 @@ export class NicknameView extends View{
 
     constructor(
         private socketController: ISocketController,
-        private addNewMessage: (messageType: MessageType, message: string) => void
+        private addNewMessage?: (messageType: MessageType, message: string) => void
     ) {
         super();
         this.container = DomUtil.getElementOrCreate<HTMLElement>(document.getElementById("nick"), "form");
@@ -35,7 +35,7 @@ export class NicknameView extends View{
                 roomName: DataStore.instance.room
             };
             this.socketController.sendSocketMessage(msg, () => {
-                this.addNewMessage(MESSAGE_TYPE.ALERT, `📣 지금부터 ${original} 님을 ${changed} 님이라고 불러주세요.`);
+                this.addNewMessage?.(MESSAGE_TYPE.ALERT, `📣 지금부터 ${original} 님을 ${changed} 님이라고 불러주세요.`);
                 DataStore.instance.nickname = changed;
             });
         }

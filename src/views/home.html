@@ -12,30 +12,34 @@
 </head>
 <body>
 <main>
-<!--    <form class="round_input_form" id="nick">-->
-<!--        <label>닉네임</label>-->
-<!--        <input type="text">-->
-<!--        <button>적용</button>-->
-<!--    </form>-->
-    <video id="myFace" autoplay playsinline width="400" height="400"></video>
-    <button id="mute">음소거</button>
-    <button id="camera">비디오 끄기</button>
-    <select name="카메라" id="camList"></select>
-<!--    <div id="welcome">-->
-<!--        <form class="round_input_form" id="room-name">-->
-<!--            <label>방 이름</label>-->
-<!--            <input type="text" required>-->
-<!--            <button>입장</button>-->
-<!--        </form>-->
-<!--        <h3>방 목록</h3>-->
-<!--        <ul id="room-list"></ul>-->
-<!--    </div>-->
-<!--    <div id="room">-->
-<!--        <h3></h3>-->
-<!--        <h4>명 채팅중</h4>-->
-<!--        <div id="list"></div>-->
-<!--        <form id="chat"><input type="text" placeholder="메시지 입력..."></form>-->
-<!--    </div>-->
+        <form class="round_input_form" id="nick">
+            <label>닉네임</label>
+            <input type="text">
+            <button>적용</button>
+        </form>
+        <div id="welcome">
+            <form class="round_input_form" id="room-name">
+                <label>방 이름</label>
+                <input type="text" required>
+                <button>입장</button>
+            </form>
+<!--            <h3>방 목록</h3>-->
+<!--            <ul id="room-list"></ul>-->
+        </div>
+    <div id="call">
+        <div id="myStream">
+            <video id="myFace" autoplay playsinline width="400" height="400"></video>
+            <button id="mute">음소거</button>
+            <button id="camera">비디오 끄기</button>
+            <select name="카메라" id="camList"></select>
+        </div>
+    </div>
+    <!--    <div id="room">-->
+    <!--        <h3></h3>-->
+    <!--        <h4>명 채팅중</h4>-->
+    <!--        <div id="list"></div>-->
+    <!--        <form id="chat"><input type="text" placeholder="메시지 입력..."></form>-->
+    <!--    </div>-->
 </main>
 <script async src="https://ga.jspm.io/npm:es-module-shims@1.5.4/dist/es-module-shims.js"></script>
 <script type="importmap-shim">
@@ -44,6 +48,7 @@
       "socket.io-client": "https://cdn.socket.io/4.4.1/socket.io.esm.min.js"
     }
   }
+
 
 </script>
 <script src="/socket.io/socket.io.js"></script>

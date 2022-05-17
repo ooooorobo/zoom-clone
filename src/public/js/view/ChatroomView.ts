@@ -22,7 +22,7 @@ export class ChatroomView extends View {
 
     constructor(private socketController: ISocketController) {
         super();
-        
+
         this.container = DomUtil.getElementOrCreate(document.getElementById("room"), "div");
         this.roomTitle = DomUtil.getElementOrCreate(this.container.querySelector("h3"), "h3");
         this.userCount = DomUtil.getElementOrCreate(this.container.querySelector("h4"));

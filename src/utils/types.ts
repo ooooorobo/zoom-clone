@@ -9,7 +9,7 @@ declare global {
 
 export interface ISocketController {
     addListener: (listener: SocketControllerListener) => void;
-    sendSocketMessage: (payload: CommonSocketMessage, callback?: () => any) => void;
+    sendSocketMessage: <CALLBACK_PARAM>(payload: CommonSocketMessage, callback?: (res: CALLBACK_PARAM) => any) => void;
     enterRoom: (nickname: string, roomName: string, onEnterRoom?: (res: EnterRoomDone) => any) => void;
 }
 

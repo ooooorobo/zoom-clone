@@ -30,6 +30,12 @@ export interface ReqChangeNickname extends CommonSocketMessage {
     roomName: string;
 }
 
+export interface ReqJoinRoom extends CommonSocketMessage {
+    type: PayloadType.REQ_JOIN_ROOM;
+    roomName: string;
+    nickname: string;
+}
+
 export interface MsgChatEntered extends CommonSocketMessage {
     type: PayloadType.CHAT_ENTERED;
     nickname: string;
@@ -59,4 +65,9 @@ export interface MsgChatLeft extends CommonSocketMessage {
 export interface MsgRoomChanged extends CommonSocketMessage {
     type: PayloadType.ROOM_CHANGED;
     rooms: string[]
+}
+
+export interface MsgJoinRoom extends CommonSocketMessage {
+    type: PayloadType.MSG_JOIN_ROOM;
+
 }

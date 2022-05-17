@@ -6,9 +6,9 @@ import {
     EnterRoomDone,
     MsgChatEntered, MsgChatLeft,
     MsgChatNewMessage,
-    MsgChatNicknameChanged, MsgRoomChanged,
+    MsgChatNicknameChanged, MsgJoinRoom, MsgRoomChanged,
     ReqChangeNickname,
-    ReqEnterChat,
+    ReqEnterChat, ReqJoinRoom,
     ReqSendMessage
 } from "./shared/model/dto";
 
@@ -84,6 +84,15 @@ export default function createWsServer(httpServer: Server) {
                 done({result: false});
                 console.error(e);
             }
+        });
+
+        // video
+
+        socket.on(PayloadType.REQ_JOIN_ROOM, ({roomName, nickname}: ReqJoinRoom, done) => {
+            socket.join(roomName);
+            socketNickname = nickname;
+            done({result: true});
+            socket.to(roomName).emit(PayloadType.MSG_JOIN_ROOM, {type: PayloadType.MSG_JOIN_ROOM} as MsgJoinRoom);
         });
 
         socket.on("disconnecting", () => {
