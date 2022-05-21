@@ -1,13 +1,12 @@
 import {DomUtil} from "../util/DomUtil";
 import {View} from "./View";
+import {StreamDC} from "../dc/StreamDC";
 
 export class VideoView extends View {
     private myFace: HTMLVideoElement;
     private muteBtn: HTMLElement;
     private cameraBtn: HTMLElement;
     private camSelect: HTMLSelectElement;
-
-    private myStream?: MediaStream;
 
     private audioEnabled = false;
     private cameraEnabled = false;
@@ -28,22 +27,20 @@ export class VideoView extends View {
     }
 
     public async startVideo(): Promise<void> {
-        await this.getMedia();
         this.handleCameraClick(false);
         this.handleMuteClick(false);
-        this.showCameraList();
+        await this.showCameraList();
         this.show();
     }
 
     private async showCameraList(): Promise<void> {
-        const cams = await this.getCameras();
+        const cams = await StreamDC.instance.getCameras();
+        const currentCam = await StreamDC.instance.getCurrentCam();
         const frag = document.createDocumentFragment();
-        const currentCam = this.myStream?.getVideoTracks()[0];
         cams.forEach(c => {
             const option = document.createElement("option");
             option.value = c.deviceId;
             option.innerText = c.label;
-            console.log(c.label, currentCam?.label);
             if (c.label === currentCam?.label) {
                 option.selected = true;
             }
@@ -52,26 +49,9 @@ export class VideoView extends View {
         this.camSelect.appendChild(frag);
     }
 
-    private async getMedia(deviceId?: string): Promise<void> {
-        try {
-            this.myStream = await navigator.mediaDevices.getUserMedia({
-                audio: this.audioEnabled,
-                video: deviceId ? {deviceId: {exact: deviceId}} : {facingMode: "self"}
-            });
-            this.myFace.srcObject = this.myStream;
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    private async getCameras(): Promise<MediaDeviceInfo[]> {
-        try {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            return devices.filter(d => d.kind === "videoinput");
-        } catch (e) {
-            console.error(e);
-            return [];
-        }
+    private async getMedia(deviceId: string): Promise<void> {
+        await StreamDC.instance.setCameraDevice(deviceId);
+        this.myFace.srcObject = StreamDC.instance.getMyStream();
     }
 
     private handleMuteClick(toggle = true) {
@@ -81,7 +61,7 @@ export class VideoView extends View {
         } else {
             this.muteBtn.innerText = "음소거 해제";
         }
-        this.myStream?.getAudioTracks().forEach(a => a.enabled = this.audioEnabled);
+        StreamDC.instance.setAudioEnabled(this.audioEnabled);
     }
 
     private handleCameraClick(toggle = true) {
@@ -91,11 +71,10 @@ export class VideoView extends View {
         } else {
             this.cameraBtn.innerText = "비디오 켜기";
         }
-        this.myStream?.getVideoTracks().forEach(a => a.enabled = this.cameraEnabled);
+        StreamDC.instance.setVideoEnabled(this.cameraEnabled);
     }
 
     private handleCameraChange() {
-        console.log(this.camSelect.value);
         this.getMedia(this.camSelect.value);
     }
 }
