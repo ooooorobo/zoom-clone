@@ -1,7 +1,7 @@
 import {StreamDC} from "../dc/StreamDC";
 import {SocketIoController} from "./socket/SocketIOController";
 import {PayloadType} from "../../../shared/enum";
-import {ReqRtcSendOffer} from "../../../shared/model/dto";
+import {ReqRtcSendAnswer, ReqRtcSendOffer} from "../../../shared/model/dto";
 import {DataStore} from "../dc/DataStore";
 
 export class RtcController {
@@ -29,5 +29,14 @@ export class RtcController {
         this.peerConnection?.setLocalDescription(offer);
         // offer 전송
         SocketIoController.instance.sendSocketMessage({type: PayloadType.RTC_SEND_OFFER, offer, roomName: DataStore.instance.room} as ReqRtcSendOffer);
+    }
+
+    public async createAnswer() {
+        const answer = await this.peerConnection?.createAnswer();
+        SocketIoController.instance.sendSocketMessage({type: PayloadType.RTC_SEND_ANSWER, answer, roomName: DataStore.instance.room} as ReqRtcSendAnswer);
+    }
+
+    public setRemoteDescription(offer: RTCSessionDescriptionInit) {
+        this.peerConnection?.setRemoteDescription(offer);
     }
 }

@@ -9,11 +9,11 @@ import {
     MsgChatNewMessage,
     MsgChatNicknameChanged,
     MsgJoinRoom,
-    MsgRoomChanged,
+    MsgRoomChanged, MsgRtcSendAnswer,
     MsgRtcSendOffer,
     ReqChangeNickname,
     ReqEnterChat,
-    ReqJoinRoom,
+    ReqJoinRoom, ReqRtcSendAnswer,
     ReqRtcSendOffer,
     ReqSendMessage
 } from "./shared/model/dto";
@@ -103,6 +103,11 @@ export default function createWsServer(httpServer: Server) {
 
         socket.on(PayloadType.RTC_SEND_OFFER, ({roomName, offer}: ReqRtcSendOffer, done) => {
             socket.to(roomName).emit(PayloadType.RTC_SEND_OFFER, {type: PayloadType.RTC_SEND_OFFER, offer} as MsgRtcSendOffer);
+            done({result: true});
+        });
+
+        socket.on(PayloadType.RTC_SEND_ANSWER, ({roomName, answer}: ReqRtcSendAnswer, done) => {
+            socket.to(roomName).emit(PayloadType.RTC_SEND_ANSWER, {type: PayloadType.RTC_SEND_ANSWER, answer} as MsgRtcSendAnswer);
             done({result: true});
         });
 
