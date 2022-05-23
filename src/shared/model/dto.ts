@@ -71,3 +71,14 @@ export interface MsgJoinRoom extends CommonSocketMessage {
     type: PayloadType.MSG_JOIN_ROOM;
 
 }
+
+export interface ReqRtcSendOffer extends CommonSocketMessage {
+    type: PayloadType.RTC_SEND_OFFER;
+    offer: RTCOfferOptions;
+    roomName: string;
+}
+
+export interface MsgRtcSendOffer extends CommonSocketMessage {
+    type: PayloadType.RTC_SEND_OFFER;
+    offer: RTCOfferOptions;
+}

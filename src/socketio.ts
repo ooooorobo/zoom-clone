@@ -4,11 +4,17 @@ import {instrument} from "@socket.io/admin-ui";
 import {PayloadType} from "./shared/enum";
 import {
     EnterRoomDone,
-    MsgChatEntered, MsgChatLeft,
+    MsgChatEntered,
+    MsgChatLeft,
     MsgChatNewMessage,
-    MsgChatNicknameChanged, MsgJoinRoom, MsgRoomChanged,
+    MsgChatNicknameChanged,
+    MsgJoinRoom,
+    MsgRoomChanged,
+    MsgRtcSendOffer,
     ReqChangeNickname,
-    ReqEnterChat, ReqJoinRoom,
+    ReqEnterChat,
+    ReqJoinRoom,
+    ReqRtcSendOffer,
     ReqSendMessage
 } from "./shared/model/dto";
 
@@ -93,6 +99,11 @@ export default function createWsServer(httpServer: Server) {
             socketNickname = nickname;
             done({result: true});
             socket.to(roomName).emit(PayloadType.MSG_JOIN_ROOM, {type: PayloadType.MSG_JOIN_ROOM} as MsgJoinRoom);
+        });
+
+        socket.on(PayloadType.RTC_SEND_OFFER, ({roomName, offer}: ReqRtcSendOffer, done) => {
+            socket.to(roomName).emit(PayloadType.RTC_SEND_OFFER, {type: PayloadType.RTC_SEND_OFFER, offer} as MsgRtcSendOffer);
+            done({result: true});
         });
 
         socket.on("disconnecting", () => {

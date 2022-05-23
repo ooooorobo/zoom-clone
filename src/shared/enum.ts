@@ -9,6 +9,7 @@ export enum PayloadType {
     ROOM_CHANGED = "ROOM_CHANGED",
     REQ_JOIN_ROOM = "REQ_JOIN_ROOM",
     MSG_JOIN_ROOM = "MSG_JOIN_ROOM",
+    RTC_SEND_OFFER = "RTC_SEND_OFFER"
 }
 
 export const MESSAGE_TYPE = {
