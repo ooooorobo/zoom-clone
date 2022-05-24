@@ -14,7 +14,7 @@ export class StreamDC {
     private constructor() {
         this.constraints = {
             audio: false,
-            video: {facingMode: "self"}
+            video: {facingMode: "self"},
         } as MediaStreamConstraints;
         this.updateUserMedia();
     }

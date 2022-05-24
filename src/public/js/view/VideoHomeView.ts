@@ -4,7 +4,7 @@ import {PayloadType} from "../../../shared/enum";
 import {ISocketController} from "../../../utils/types";
 import {
     CommonSocketMessage,
-    MsgRtcSendAnswer,
+    MsgRtcSendAnswer, MsgRtcSendIce,
     MsgRtcSendOffer,
     OnMessageDone,
     ReqJoinRoom
@@ -41,6 +41,11 @@ export class VideoHomeView extends View {
         case PayloadType.RTC_SEND_ANSWER: {
             const {answer} = msg as MsgRtcSendAnswer;
             RtcController.instance.setRemoteDescription(answer);
+            break;
+        }
+        case PayloadType.RTC_SEND_ICE: {
+            const {ice} = msg as MsgRtcSendIce;
+            RtcController.instance.addIceCandidate(ice);
             break;
         }
         }

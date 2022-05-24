@@ -93,3 +93,14 @@ export interface MsgRtcSendAnswer extends CommonSocketMessage {
     type: PayloadType.RTC_SEND_ANSWER;
     answer: RTCSessionDescriptionInit;
 }
+
+export interface ReqRtcSendIce extends CommonSocketMessage {
+    type: PayloadType.RTC_SEND_ICE;
+    ice: RTCIceCandidate;
+    roomName: string;
+}
+
+export interface MsgRtcSendIce extends CommonSocketMessage {
+    type: PayloadType.RTC_SEND_ICE;
+    ice: RTCIceCandidate;
+}
