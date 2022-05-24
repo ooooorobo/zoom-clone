@@ -8,9 +8,6 @@ export class VideoView extends View {
     private cameraBtn: HTMLElement;
     private camSelect: HTMLSelectElement;
 
-    private audioEnabled = false;
-    private cameraEnabled = false;
-
     constructor() {
         super();
 
@@ -29,6 +26,7 @@ export class VideoView extends View {
     public async startVideo(): Promise<void> {
         this.handleCameraClick(false);
         this.handleMuteClick(false);
+        await this.getMedia();
         await this.showCameraList();
         this.show();
     }
@@ -49,29 +47,25 @@ export class VideoView extends View {
         this.camSelect.appendChild(frag);
     }
 
-    private async getMedia(deviceId: string): Promise<void> {
+    private async getMedia(deviceId?: string): Promise<void> {
         await StreamDC.instance.setCameraDevice(deviceId);
         this.myFace.srcObject = StreamDC.instance.getMyStream();
     }
 
     private handleMuteClick(toggle = true) {
-        if (toggle) this.audioEnabled = !this.audioEnabled;
-        if (this.audioEnabled) {
-            this.muteBtn.innerText = "음소거";
-        } else {
-            this.muteBtn.innerText = "음소거 해제";
+        const enabled = toggle ? !StreamDC.instance.audioEnabled : StreamDC.instance.audioEnabled;
+        this.muteBtn.innerText = enabled ? "음소거" : "음소거 해제";3;
+        if (toggle) {
+            StreamDC.instance.setAudioEnabled(enabled);
         }
-        StreamDC.instance.setAudioEnabled(this.audioEnabled);
     }
 
     private handleCameraClick(toggle = true) {
-        if (toggle) this.cameraEnabled = !this.cameraEnabled;
-        if (this.cameraEnabled) {
-            this.cameraBtn.innerText = "비디오 끄기";
-        } else {
-            this.cameraBtn.innerText = "비디오 켜기";
+        const enabled = toggle ? !StreamDC.instance.cameraEnabled : StreamDC.instance.cameraEnabled;
+        this.cameraBtn.innerText = enabled ? "비디오 끄기" : "비디오 켜기";
+        if (toggle) {
+            StreamDC.instance.setVideoEnabled(enabled);
         }
-        StreamDC.instance.setVideoEnabled(this.cameraEnabled);
     }
 
     private handleCameraChange() {

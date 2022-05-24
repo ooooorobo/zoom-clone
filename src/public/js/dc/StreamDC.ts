@@ -8,6 +8,9 @@ export class StreamDC {
     private myStream: MediaStream | null = null;
     private constraints: MediaStreamConstraints = {};
 
+    public audioEnabled = false;
+    public cameraEnabled = false;
+
     private constructor() {
         this.constraints = {
             audio: false,
@@ -18,6 +21,8 @@ export class StreamDC {
 
     private async updateUserMedia() {
         this.myStream = await navigator.mediaDevices.getUserMedia(this.constraints);
+        this.setVideoEnabled(this.cameraEnabled);
+        this.setAudioEnabled(this.audioEnabled);
     }
 
     public getMyStream(): MediaStream | null {
@@ -25,16 +30,20 @@ export class StreamDC {
     }
 
     public setAudioEnabled(enabled: boolean) {
+        this.audioEnabled = enabled;
         this.myStream?.getAudioTracks().forEach(a => a.enabled = enabled);
     }
 
     public setVideoEnabled(enabled: boolean) {
-        this.myStream?.getVideoTracks().forEach(a => a.enabled = enabled);
+        this.cameraEnabled = enabled;
+        this.myStream?.getVideoTracks().forEach(a => {
+            a.enabled = enabled;
+        });
     }
 
-    public setCameraDevice(deviceId: string) {
-        this.constraints.video = { deviceId };
-        this.updateUserMedia();
+    public async setCameraDevice(deviceId?: string) {
+        this.constraints.video = deviceId ? { deviceId } : {facingMode: "self"};
+        return this.updateUserMedia();
     }
 
     public async getCameras(): Promise<MediaDeviceInfo[]> {
